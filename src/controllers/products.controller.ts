@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  HttpStatus,
+  HttpCode
+} from '@nestjs/common';
 
 @Controller('products')
 export class ProductsController {
@@ -10,8 +21,12 @@ export class ProductsController {
 
   // params forma 1
   @Get(':id')
+  // status code
+  @HttpCode(HttpStatus.ACCEPTED)
   getProduct(@Param() params: any) {
-    return `product ${params.id}`;
+    return {
+      message: `product ${params.id}`,
+    };
   }
 
   // params forma 2
@@ -29,7 +44,7 @@ export class ProductsController {
   }
 
   // query 2
-  @Get('    2')
+  @Get('2')
   getProducts2(
     @Query('limit') limit: number,
     @Query('offset') offset: number,
