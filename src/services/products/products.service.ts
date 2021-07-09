@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Product } from './../../entities/product.entity';
 
@@ -22,8 +22,17 @@ export class ProductsService {
   }
 
   findOne(id: number) {
-    return this.products.find((item) => item.id === id);
+    // manejo de errores
+    const product = this.products.find((item) => item.id === id);
+    // tecnica errorFirst => cancelar el proceso cuando hay un error de primeras y no continuar con ejecuciones 
+
+    if (!product) {
+      // lanzar throw random (pero no es beuna idea porque tenemos un error 500)
+      // throw 'random error';
+      throw new NotFoundException(`Product #${id} not found`);
   }
+   return product;
+}
 
   // payload any de momento
   create(payload: any) {
