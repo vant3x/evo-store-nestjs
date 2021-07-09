@@ -8,11 +8,16 @@ import {
   Put,
   Query,
   HttpStatus,
-  HttpCode
+  HttpCode,
 } from '@nestjs/common';
+
+import { ProductsService } from './../services/products/products.service';
 
 @Controller('products')
 export class ProductsController {
+  // el moto de nest va a resolver la inyección de depedencias, va a crear una instancia de Product service
+  // y le pasa la instancia a nuestro controlador
+  constructor(private productsService: ProductsService) {}
   // choque de rutas (dos rutas igual con diferente controlador) => rutas estaticas de primeras
   @Get('filter')
   getProductsFilter() {
@@ -24,13 +29,14 @@ export class ProductsController {
   // status code
   @HttpCode(HttpStatus.ACCEPTED)
   getProduct(@Param() params: any) {
-    return {
+    /*return {
       message: `product ${params.id}`,
-    };
+    }; */
+    return this.productsService.findOne(+params.id);
   }
 
   // params forma 2
-  @Get(':id')
+  @Get('params2/:id')
   getProduct2(@Param('id') id: string) {
     return `produ
     ct ${id}`;
@@ -40,7 +46,8 @@ export class ProductsController {
   @Get('')
   getProducts(@Query() params: any) {
     const { limit, offset } = params;
-    return `products: limit => ${limit} offset => ${offset}`;
+    //  return `products: limit => ${limit} offset => ${offset}`;
+    return this.productsService.findAll();
   }
 
   // query 2
@@ -66,10 +73,11 @@ export class ProductsController {
   // Body recibir el cuerpo
   @Post()
   create(@Body() payload: any) {
-    return {
+    /* return {
       message: 'accion de crear',
       payload,
-    };
+    }; */
+    return this.productsService.create(payload);
   }
 
   // Body recibir el cuerpo params
@@ -84,10 +92,11 @@ export class ProductsController {
   // actualizar
   @Put(':id')
   update(@Param('id') id: number, @Body() payload: any) {
-    return {
+    /*return {
       id,
       payload,
-    };
+    };*/
+    return this.productsService.update(id, payload);
   }
 
   @Delete(':id')
